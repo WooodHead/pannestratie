@@ -15,12 +15,11 @@
     <script>
         if (window.module) module = window.module;
     </script>
-    <script src="js/index.js" type="text/javascript"></script>
 </head>
 <body>
 <div class="container">
-    <h1>Welkom!</h1>
-    <div class="col-md-12">
+    <h1 class="hidden-print">Welkom!</h1>
+    <div class="col-md-12 hidden-print">
         Hier komen de filters
     </div>
     <div class="col-md-12">
@@ -61,13 +60,13 @@
             </tbody>
         </table>
     </div>
-    <div class="modal" id="newLine" tabindex="-1" role="dialog" aria-labelledby="newLine">
+    <div class="modal" id="new-regel" tabindex="-1" role="dialog" aria-labelledby="new-regel">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
                             aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="myModalLabel">Nieuwe regel toevoegen</h4>
+                    <h4 class="modal-title">Nieuwe regel toevoegen</h4>
                 </div>
                 <div class="modal-body">
                     <form class="form-horizontal" action="">
@@ -133,5 +132,7 @@
         </div>
     </div>
 </div>
+<script src="js/index.js" type="text/javascript"></script>
+<script src="js/front/regel.js" type="text/javascript"></script>
 </body>
 </html>

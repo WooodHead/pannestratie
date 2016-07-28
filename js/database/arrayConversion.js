@@ -6,11 +6,9 @@
 function arrayToObject(array) {
     const object = {};
     for (let item of array) {
-        console.log(item);
         const description = item.name;
         object[description] = item.value;
     }
-    console.log(object);
     return object;
 }
 
@@ -25,7 +23,6 @@ function objectToArray(object) {
             array.push({name: key, value: object[key]});
         }
     }
-    console.log(array);
     return array;
 }
 
