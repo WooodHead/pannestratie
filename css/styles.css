@@ -1,0 +1,16 @@
+td:focus {
+    outline: 2px auto #66afe9;
+}
+
+.alert-container {
+    position: relative;
+}
+
+.alert-wrapper {
+    position: absolute;
+    z-index: 1;
+}
+
+.alert-wrapper {
+    margin-top: 20px;
+}

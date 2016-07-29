@@ -34,7 +34,6 @@ function getNextId(callback) {
 
 function create(data, callback = () => {
 }) {
-    data = arrayConversion.arrayToObject(data);
     getNextId((id) => {
             data._id = id;
             db.insert(data, (error, newDoc) => {
@@ -48,9 +47,38 @@ function create(data, callback = () => {
     );
 }
 
+function update(data, where = {}, callback = () => {
+}) {
+    let id = Number(data._id);
+    if (id) {
+        delete data._id;
+        db.update({_id: id}, {$set: data}, {returnUpdatedDocs: true}, (error, numAffected, affectedDocuments) => {
+            callback(error, numAffected, affectedDocuments);
+        });
+    } else {
+        db.update(where, {$set: data}, {}, (error, numAffected, affectedDocuments) => {
+            callback(error, numAffected, affectedDocuments)
+        });
+    }
+}
+
 /**
  *
  * @type {findAll}
  */
 module.exports.findAll = findAll;
+
+/**
+ *
+ * @type {create}
+ */
 module.exports.create = create;
+
+/**
+ *
+ * @type {update}
+ * @param {{}} data
+ * @param {{}} where
+ * @param {function} callback
+ */
+module.exports.update = update;
