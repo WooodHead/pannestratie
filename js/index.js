@@ -23,7 +23,7 @@
      * @param {string} type possible values: "success", "info", "warning", "dager"
      * @param {string} text
      */
-    function showAlert(type, text) {
+    function alert(type, text) {
         const alertWrapper = $(".alert-wrapper");
         alertWrapper.append(
             "<div class='alert alert-dismissable alert-" + type + "' role='alert'>" +
@@ -40,6 +40,34 @@
         }, 3000);
     }
 
+    function confirm(text, callback) {
+        const confirmModal = $("#confirm");
+        if (confirmModal.is(":visible")) {
+            throw new Error("Confirm already visible");
+        }
+        confirmModal.modal("show");
+        confirmModal.find(".confirm-text").text(text);
+        confirmModal.find("#ok").on("click", () => {
+            unsetListeners();
+            callback(true)
+        });
+        confirmModal.find("#cancel").on("click", () => {
+            unsetListeners();
+            callback(false)
+        });
+        confirmModal.on("hide.bs.modal", () => {
+            unsetListeners();
+            callback(false)
+        });
+
+        const unsetListeners = () => {
+            confirmModal.find("#cancel").off("click");
+            confirmModal.find("#ok").off("click");
+            confirmModal.off("hide.bs.modal");
+        }
+    }
+
     window.formatCurrency = formatCurrency;
-    window.showAlert = showAlert;
+    window.alert = alert;
+    window.confirm = confirm;
 })();
