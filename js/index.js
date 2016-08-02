@@ -48,24 +48,31 @@
         confirmModal.modal("show");
         confirmModal.on("keypress", (event) => {
             if(event.which === 13) {
-                unsetListeners();
-                confirmModal.modal("hide");
-                callback(true);
+                ok();
             }
         });
         confirmModal.find(".confirm-text").text(text);
         confirmModal.find("#ok").on("click", () => {
-            unsetListeners();
-            callback(true)
+            ok();
         });
         confirmModal.find("#cancel").on("click", () => {
-            unsetListeners();
-            callback(false)
+            cancel();
         });
         confirmModal.on("hide.bs.modal", () => {
-            unsetListeners();
-            callback(false)
+            cancel();
         });
+
+        const ok = () => {
+            unsetListeners();
+            confirmModal.modal("hide");
+            callback(true);
+        };
+
+        const cancel = () => {
+            unsetListeners();
+            confirmModal.modal("hide");
+            callback(false);
+        };
 
         const unsetListeners = () => {
             confirmModal.find("#cancel").off("click");
