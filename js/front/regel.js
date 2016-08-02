@@ -76,7 +76,9 @@
                 data += '<td tabindex="0">' + doc[key] + '</td>'
             }
         }
-        data += '<td class="hidden-print"><a class="delete glyphicon glyphicon-remove"></a></td>';
+        data += '<td class="hidden-print">' +
+                '<a class="delete glyphicon glyphicon-remove"></a>' +
+                '</td>';
         row += '>' + data + '</tr>';
 
         if (mass) { // _if a lot of rows need to be added, add them out of the loop for better performance
@@ -95,14 +97,21 @@
         }
         regelModal.modal("show");
         $(regelModal.find('input:visible, select')[focusField]).focus();
+        regelModal.on("keypress", regelModal, (event) => {
+            if(event.which === 13) {
+                addNewRegel(event);
+                unsetListeners();
+            }
+        });
         regelModal.find('#btn-save').on("click", regelModal, (event) => {
                 addNewRegel(event);
-            unsetListeners();
+                unsetListeners();
             }
         );
 
         const unsetListeners = () => {
             regelModal.find("#btn-save").off("click");
+            regelModal.off("keypress");
         };
     }
 
@@ -152,4 +161,5 @@
     };
 
     window.createNewRegel = createNewRegel;
+    window.removeRegel = removeRegel;
 })(jQuery);

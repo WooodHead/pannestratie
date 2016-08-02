@@ -2,7 +2,8 @@
     $(document).keydown((event)=> {
         const target = $(event.target);
         if (target.is("td")) {
-            switch (event.keyCode) {
+            const data = target.parent().data();
+            switch (event.which) {
                 case 37:
                     // Move cell back
                     target.prev().focus();
@@ -21,8 +22,11 @@
                     break;
                 case 13:
                     // Open edit window with focus to current field
-                    createNewRegel(target.parent().data(), target.index() - 1);
+                    createNewRegel(data, target.index() - 1);
                     break;
+                case 46:
+                    // Delete row, prompt will be shown first
+                    removeRegel(data);
                 default:
                     break;
             }

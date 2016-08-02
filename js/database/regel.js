@@ -9,6 +9,65 @@ const DataStore = require('nedb')
     autoload: true
 });
 
+class Regel {
+
+    constructor(params) {
+        console.log(params);
+    }
+
+    /**
+     *
+     * @return {DataStore}
+     */
+    static getDb() {
+        if(!Regel.db) {
+            Regel.db = new DataStore({
+                filename: app.getPath('userData') + '/databases/regel.db',
+                autoload: true
+            });
+        }
+
+        return Regel.db;
+    }
+
+    store() {
+        const db = Regel.getDb();
+        db.update({_id: this._id}, this, {upsert: true,returnUpdatedDocs:true}, (error, numAffected, affectedDocuments, upsert) => {
+            if (error) {
+                console.log(error);
+            }
+
+            console.log(numAffected, affectedDocuments, upsert);
+        })
+    }
+
+    /**
+     *
+     */
+    static find(conditions, callback) {
+        const db = Regel.getDb();
+        db.findOne(conditions, callback);
+    }
+
+    /**
+     *
+     * @param {integer} id
+     * @param {()} callback
+     */
+    static findById(id, callback) {
+        return Regel.find({_id: id}, callback);
+    }
+}
+
+const regelA = new Regel();
+regelA._id = 1;
+regelA.name = "test";
+regelA.store();
+console.log(regelA);
+const testRegel = Regel.findById(1, (error, doc) => {
+    console.log("Document:",doc);
+});
+
 /**
  *
  * @param conditions

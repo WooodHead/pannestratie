@@ -46,6 +46,13 @@
             throw new Error("Confirm already visible");
         }
         confirmModal.modal("show");
+        confirmModal.on("keypress", (event) => {
+            if(event.which === 13) {
+                unsetListeners();
+                confirmModal.modal("hide");
+                callback(true);
+            }
+        });
         confirmModal.find(".confirm-text").text(text);
         confirmModal.find("#ok").on("click", () => {
             unsetListeners();
@@ -64,6 +71,7 @@
             confirmModal.find("#cancel").off("click");
             confirmModal.find("#ok").off("click");
             confirmModal.off("hide.bs.modal");
+            confirmModal.off("keypress");
         }
     }
 
