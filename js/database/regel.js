@@ -41,6 +41,12 @@ class Regel {
         })
     }
 
+    delete() {
+        const db = Regel.getDb();
+
+        db.remove({_id: this._id});
+    }
+
     /**
      *
      */
