@@ -4,7 +4,7 @@ const arrayConversion = require('./arrayConversion');
 
 
 const DataStore = require('nedb')
-    , db = new DataStore({
+    , _db = new DataStore({
     filename: app.getPath('userData') + '/database/regel.db',
     autoload: true
 });
@@ -15,44 +15,46 @@ class Regel {
         console.log(params);
     }
 
-    /**
-     *
-     * @return {DataStore}
-     */
-    static getDb() {
-        if(!Regel.db) {
-            Regel.db = new DataStore({
-                filename: app.getPath('userData') + '/databases/regel.db',
-                autoload: true
-            });
-        }
-
-        return Regel.db;
-    }
-
     store() {
-        const db = Regel.getDb();
-        db.update({_id: this._id}, this, {upsert: true,returnUpdatedDocs:true}, (error, numAffected, affectedDocuments, upsert) => {
-            if (error) {
-                console.log(error);
-            }
+        if(this._id) {
+            const id = this._id;
+            delete this._id;
+            _db.update({_id: id}, this, {upsert: true,returnUpdatedDocs:true}, (error, numAffected, affectedDocuments, upsert) => {
+                if (error)
+                    console.log(error);
 
-            console.log(numAffected, affectedDocuments, upsert);
-        })
+                console.log(numAffected, affectedDocuments, upsert);
+            })
+        } else {
+            this.getNextId((id) => {
+                console.log(this);
+            })
+        }
     }
 
     delete() {
-        const db = Regel.getDb();
+        _db.remove({_id: this._id});
+    }
 
-        db.remove({_id: this._id});
+    static findAll(conditions = {}, callback) {
+        _db.find(conditions, (error, docs) => {
+            if(error)
+                console.log(error);
+
+            callback(docs);
+      })
     }
 
     /**
      *
      */
     static find(conditions, callback) {
-        const db = Regel.getDb();
-        db.findOne(conditions, callback);
+        _db.findOne(conditions, (error, doc) => {
+            if (error)
+                console.log(error);
+
+            callback(doc);
+        });
     }
 
     /**
@@ -61,16 +63,31 @@ class Regel {
      * @param {()} callback
      */
     static findById(id, callback) {
-        return Regel.find({_id: id}, callback);
+        _db.findOne({_id: id}, (error, doc) => {
+            if (error)
+                console.log(error);
+
+            callback(doc);
+        });
+    }
+
+    getNextId(callback) {
+        db.findOne().sort({_id: -1}).exec((error, doc) => {
+                if (error) {
+                    console.log(error);
+                }
+                if (doc && doc._id) {
+                    callback(parseInt(doc._id) + 1);
+                } else {
+                    callback(1);
+                }
+            }
+        );
     }
 }
 
-const regelA = new Regel();
-regelA._id = 1;
-regelA.name = "test";
-regelA.store();
-console.log(regelA);
-const testRegel = Regel.findById(1, (error, doc) => {
+const testRegel = Regel.findById(2, (error, doc) => {
+    doc.update();
     console.log("Document:",doc);
 });
 
@@ -80,12 +97,7 @@ const testRegel = Regel.findById(1, (error, doc) => {
  * @param callback
  */
 function findAll(conditions = {}, callback) {
-    db.find(conditions, (error, docs) => {
-        if (error) {
-            console.log(error);
-        }
-        callback(docs);
-    });
+    Regel.findAll(conditions, callback);
 }
 
 /**
@@ -93,17 +105,7 @@ function findAll(conditions = {}, callback) {
  * @param callback
  */
 function getNextId(callback) {
-    db.findOne().sort({_id: -1}).exec((error, doc) => {
-            if (error) {
-                console.log(error);
-            }
-            if (doc && doc._id) {
-                callback(parseInt(doc._id) + 1);
-            } else {
-                callback(1);
-            }
-        }
-    );
+
 }
 
 /**

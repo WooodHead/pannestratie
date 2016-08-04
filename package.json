@@ -9,7 +9,8 @@
     "url": "https://github.com/baukevdw/pannestratie.git"
   },
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "install": "node ./install.js"
   },
   "dependencies": {
     "nedb": "^1.8.0"
