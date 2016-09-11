@@ -47,7 +47,7 @@
         }
         confirmModal.modal("show");
         confirmModal.on("keypress", (event) => {
-            if(event.which === 13) {
+            if (event.which === 13) {
                 ok();
             }
         });

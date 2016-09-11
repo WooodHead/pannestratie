@@ -47,6 +47,9 @@
     });
 
     const updateTableListener = () => {
+        tableContent.find("tr").off("dblclick");
+        tableContent.find("a.delete").off("click");
+
         tableContent.find("tr").on("dblclick", (event) => {
             const target = $(event.currentTarget);
             const realTarget = $(event.target);
@@ -55,7 +58,6 @@
 
         tableContent.find("a.delete").on("click", (event) => {
             const target = $(event.target);
-            console.log(target);
             removeRegel(target.parent().parent().data())
         });
     };
@@ -76,9 +78,7 @@
                 data += '<td tabindex="0">' + doc[key] + '</td>'
             }
         }
-        data += '<td class="hidden-print">' +
-                '<a class="delete glyphicon glyphicon-remove"></a>' +
-                '</td>';
+        data += '<td class="hidden-print"><a class="delete glyphicon glyphicon-remove"></a></td>';
         row += '>' + data + '</tr>';
 
         if (mass) { // _if a lot of rows need to be added, add them out of the loop for better performance
@@ -97,21 +97,31 @@
         }
         regelModal.modal("show");
         $(regelModal.find('input:visible, select')[focusField]).focus();
-        regelModal.on("keypress", regelModal, (event) => {
-            if(event.which === 13) {
-                addNewRegel(event);
-                unsetListeners();
-            }
-        });
         regelModal.find('#btn-save').on("click", regelModal, (event) => {
                 addNewRegel(event);
                 unsetListeners();
             }
         );
 
+        setTimeout(()=> {
+            regelModal.find('input:visible, select').on("keypress", regelModal, (event) => {
+                if (event.which === 13) {
+                    addNewRegel(event);
+                    unsetListeners();
+                }
+            });
+        }, 20);
+
+
+        regelModal.on("hide.bs.modal", () => {
+                unsetListeners();
+            }
+        );
+
         const unsetListeners = () => {
             regelModal.find("#btn-save").off("click");
-            regelModal.off("keypress");
+            regelModal.find('input:visible, select').off("keypress");
+
         };
     }
 
@@ -141,7 +151,6 @@
     const removeRegel = (data) => {
         confirm("Weet u zeker dat u dit item wilt verwijderen?", (result) => {
             if (result) {
-                console.log(data);
                 const id = Number(data._id);
                 const row = tableContent.find("#" + id);
                 row.remove();

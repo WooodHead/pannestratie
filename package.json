@@ -13,7 +13,10 @@
     "install": "node ./install.js"
   },
   "dependencies": {
-    "nedb": "^1.8.0"
+    "bootstrap": "^3.3.7",
+    "monolog": "^0.0.5",
+    "nedb": "^1.8.0",
+    "underscore": "^1.8.3"
   },
   "devDependencies": {
     "bower": "^1.7.9",
