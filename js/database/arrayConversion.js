@@ -6,12 +6,8 @@
 function arrayToObject(array) {
     const object = {};
     for (let item of array) {
-        const description = item.name;
-        if (description === "date") {
-            object[description] = new Date(item.value);
-        } else {
-            object[description] = item.value;
-        }
+        const description   = item.name;
+        object[description] = item.value;
     }
     return object;
 }

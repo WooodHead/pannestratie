@@ -34,6 +34,15 @@
     };
 
     /**
+     *
+     * @type {Date}
+     */
+    const formatDate = (date) => {
+        date = new Date(date);
+        return date.toLocaleDateString();
+    };
+
+    /**
      * The order in which the fields should be printed to the table
      *
      * @type {string[]}
@@ -50,7 +59,8 @@
         "kas_uit":  formatCurrency,
         "bank_in":  formatCurrency,
         "bank_uit": formatCurrency,
-        "category": getCategory
+        "category": getCategory,
+        "date":     formatDate
     };
 
     ipcRenderer.on('newLine', () => {
@@ -62,14 +72,15 @@
             const data = filterForm.serializeArray().reduce(function (obj, item) {
                 obj[item.name] = item.value;
                 return obj;
-            }, {});
-            regel.findAll({
-                "category": data.category_filter,
-                "date":     {
-                    $gte: data.from_date,
-                    $lte: data.to_date
-                }
-            }, (docs) => {
+            });
+
+            const filter = {};
+            if (data.category_filter) filter.category = data.category_filter;
+            if (data.from_date || data.to_date) filter.date = {};
+            if (data.from_date) filter.date.$gte = data.from_date;
+            if (data.to_date) filter.date.$lte = data.to_date;
+
+            regel.findAll(filter, (docs) => {
                 setData(docs);
             });
         }
@@ -198,7 +209,7 @@
                     }
                     const regel = addRegel(updatedDoc, true);
                     $("#" + updatedDoc._id).replaceWith(regel);
-                updateTableListener();
+                    updateTableListener();
                 }
             );
         } else {
