@@ -1,13 +1,37 @@
 (($) => {
-    const remote = require('electron').remote;
+    const remote        = require('electron').remote;
     const {ipcRenderer} = require('electron');
 
-    const regel = remote.require('./js/database/regel');
+    const regel           = remote.require('./js/database/regel');
     const arrayConversion = remote.require('./js/database/arrayConversion');
 
-    const table = $("#line-table");
+    const table        = $("#line-table");
     const tableContent = table.find("tbody");
-    const regelModal = $("#new-regel");
+    const regelModal   = $("#new-regel");
+
+    const filterForm   = $("#filter-form");
+    const filterSubmit = filterForm.find("#submit-button");
+    const filterReset  = filterForm.find("#reset-button");
+
+
+    const categories = {
+        "bemiddeling":            "Bemiddeling",
+        "donatie_asoka":          "Donatie asoka",
+        "donatie_olescan":        "Donatie Olescan",
+        "donatie_overig":         "Donatie overig",
+        "verkoop":                "Verkoop",
+        "ontvangen_donatie":      "Ontvangen donatie",
+        "werkreis":               "Werkreis",
+        "inventaris_voer":        "Inventaris - voer",
+        "inventaris_training":    "Inventaris - training",
+        "inventaris_accessoires": "Inventaris - accessoires",
+        "training":               "Training",
+        "dierenarts":             "Dierenarts",
+    };
+
+    const getCategory = (categoryKey) => {
+        return categories.hasOwnProperty(categoryKey) ? categories[categoryKey] : ""; // We don't want undefined to be returned
+    };
 
     /**
      * The order in which the fields should be printed to the table
@@ -17,32 +41,68 @@
     const keyOrder = ["_id", "description", "extra", "category", "date", "kas_in", "kas_uit", "bank_in", "bank_uit"];
 
     /**
-     * Fields which are money
+     * Fields which have custom storage- and display values on them
      *
-     * @type {string[]}
+     * @type {{}}
      */
-    const valutaFields = ["kas_in", "kas_uit", "bank_in", "bank_uit"];
+    const customFields = {
+        "kas_in":   formatCurrency,
+        "kas_uit":  formatCurrency,
+        "bank_in":  formatCurrency,
+        "bank_uit": formatCurrency,
+        "category": getCategory
+    };
 
     ipcRenderer.on('newLine', () => {
         createNewRegel();
     });
 
-    regel.findAll({}, (docs) => {
+    // Init filter
+    filterSubmit.on("click", () => {
+            const data = filterForm.serializeArray().reduce(function (obj, item) {
+                obj[item.name] = item.value;
+                return obj;
+            }, {});
+            regel.findAll({
+                "category": data.category_filter,
+                "date":     {
+                    $gte: data.from_date,
+                    $lte: data.to_date
+                }
+            }, (docs) => {
+                setData(docs);
+            });
+        }
+    );
+
+    filterReset.on("click", () => {
+        resetTable();
+    });
+
+    const resetTable = () => {
+        regel.findAll({}, (docs) => {
+            setData(docs);
+        });
+    };
+
+    // Init table
+    resetTable();
+
+    const setData = (docs) => {
+        tableContent.html("");
         let table = "";
         for (let doc of docs) {
             table += addRegel(doc, true);
         }
         tableContent.append(table);
         updateTableListener();
-    });
+    };
 
     /**
      * On modal close clear the form
      */
-    regelModal.on("hide.bs.modal", () => {
-        setTimeout(() => {
-            regelModal.find("form")[0].reset();
-        }, 50);
+    regelModal.on("hidden.bs.modal", () => {
+        regelModal.find("form")[0].reset();
 
     });
 
@@ -51,7 +111,7 @@
         tableContent.find("a.delete").off("click");
 
         tableContent.find("tr").on("dblclick", (event) => {
-            const target = $(event.currentTarget);
+            const target     = $(event.currentTarget);
             const realTarget = $(event.target);
             createNewRegel(target.data(), realTarget.index() - 1);
         });
@@ -68,12 +128,12 @@
      * @param {boolean} mass
      */
     const addRegel = (doc, mass = false) => {
-        let row = '<tr id="' + doc._id + '"';
+        let row  = '<tr id="' + doc._id + '"';
         let data = '';
         for (let key of keyOrder) {
             row += ' data-' + key + '="' + doc[key] + '"';
-            if (valutaFields.indexOf(key) > -1) {
-                data += '<td tabindex="0">' + formatCurrency(doc[key]) + '</td>'
+            if (customFields.hasOwnProperty(key)) {
+                data += '<td tabindex="0">' + customFields[key](doc[key]) + '</td>'
             } else {
                 data += '<td tabindex="0">' + doc[key] + '</td>'
             }
@@ -127,8 +187,10 @@
 
     const addNewRegel = (event) => {
         const newline = event.data;
-        let data = newline.find('form').serializeArray();
+        let data      = newline.find('form').serializeArray();
+        console.log(data);
         data = arrayConversion.arrayToObject(data);
+        console.log(data);
         if (data._id) {
             regel.update(data, {_id: data._id}, (error, numAffected, updatedDoc) => {
                     if (error) {
@@ -151,7 +213,7 @@
     const removeRegel = (data) => {
         confirm("Weet u zeker dat u dit item wilt verwijderen?", (result) => {
             if (result) {
-                const id = Number(data._id);
+                const id  = Number(data._id);
                 const row = tableContent.find("#" + id);
                 row.remove();
 
@@ -170,5 +232,5 @@
     };
 
     window.createNewRegel = createNewRegel;
-    window.removeRegel = removeRegel;
+    window.removeRegel    = removeRegel;
 })(jQuery);
