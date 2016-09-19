@@ -54,7 +54,7 @@
                             <option value="verkoop">Verkoop</option>
                             <option value="ontvangen_donatie">Ontvangen donatie</option>
                             <option value="werkreis">Werkreis</option>
-                            <option value="/inventaris/">Inventaris</option>
+                            <option value="inventaris">Inventaris</option>
                             <option value="inventaris_voer">Inventaris - voer</option>
                             <option value="inventaris_training">Inventaris - training</option>
                             <option value="inventaris_accessoires">Inventaris - accessoires</option>
@@ -64,163 +64,162 @@
                     </div>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-md-4 pull-right">
-                    <div class="btn-group pull-right">
-                        <button id="reset-button" class="btn btn-default" type="button">Reset</button>
-                        <button id="submit-button" class="btn btn-primary" type="button">Filter</button>
-                    </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4 pull-right">
+                <div class="btn-group pull-right">
+                    <button id="reset-button" class="btn btn-default" type="button">Reset</button>
+                    <button id="submit-button" class="btn btn-primary" type="button">Filter</button>
                 </div>
             </div>
-        </div>
-        <h1 class="col-md-12 visible-print">
-            Hier komt de titel voor een PDF
-        </h1>
-        <div class="col-md-12">
-            <table id="line-table" class="table table-hover">
-                <thead>
-                <tr>
-                    <th rowspan="2">
-                        ID
-                    </th>
-                    <th rowspan="2">
-                        Omschrijving
-                    </th>
-                    <th rowspan="2">
-                        Extra
-                    </th>
-                    <th rowspan="2">
-                        Categorie
-                    </th>
-                    <th rowspan="2">
-                        Datum
-                    </th>
-                    <th colspan="2">
-                        Kas
-                    </th>
-                    <th colspan="2">
-                        Bank
-                    </th>
-                    <th class="hidden-print" rowspan="2"><!--Actions column-->
-                    </th>
-                </tr>
-                <tr>
-                    <th>In</th>
-                    <th>Uit</th>
-                    <th>In</th>
-                    <th>Uit</th>
-                </tr>
-                </thead>
-                <tbody>
-
-                </tbody>
-                <tfoot>
-
-                </tfoot>
-            </table>
         </div>
     </form>
-    <div class="modal" id="new-regel" tabindex="-1" role="dialog" aria-labelledby="new-regel">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                            aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title">Nieuwe regel toevoegen</h4>
-                </div>
-                <div class="modal-body">
-                    <form class="form-horizontal">
-                        <input id="_id" name="_id" type="hidden">
-                        <div class="form-group">
-                            <label class="col-sm-3 control-label" for="description">Omschrijving:</label>
-                            <div class="col-sm-9">
-                                <input id="description" name="description" class="form-control" type="text" required
-                                       autofocus>
-                            </div>
+    <h1 class="col-md-12 visible-print">
+        Hier komt de titel voor een PDF
+    </h1>
+    <table id="line-table" class="table table-hover">
+        <thead>
+        <tr>
+            <th rowspan="2">
+                ID
+            </th>
+            <th rowspan="2">
+                Omschrijving
+            </th>
+            <th rowspan="2">
+                Extra
+            </th>
+            <th rowspan="2">
+                Categorie
+            </th>
+            <th rowspan="2">
+                Datum
+            </th>
+            <th colspan="2">
+                Kas
+            </th>
+            <th colspan="2">
+                Bank
+            </th>
+            <th class="hidden-print" rowspan="2"><!--Actions column-->
+            </th>
+        </tr>
+        <tr>
+            <th>In</th>
+            <th>Uit</th>
+            <th>In</th>
+            <th>Uit</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        </tbody>
+        <tfoot>
+
+        </tfoot>
+    </table>
+</div>
+<div class="modal" id="new-regel" tabindex="-1" role="dialog" aria-labelledby="new-regel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Nieuwe regel toevoegen</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal">
+                    <input id="_id" name="_id" type="hidden">
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label" for="description">Omschrijving:</label>
+                        <div class="col-sm-9">
+                            <input id="description" name="description" class="form-control" type="text" required
+                                   autofocus>
                         </div>
-                        <div class="form-group">
-                            <label class="col-sm-3 control-label" for="extra">Extra:</label>
-                            <div class="col-sm-9">
-                                <input id="extra" name="extra" class="form-control" type="text">
-                            </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label" for="extra">Extra:</label>
+                        <div class="col-sm-9">
+                            <input id="extra" name="extra" class="form-control" type="text">
                         </div>
-                        <div class="form-group">
-                            <label class="col-sm-3 control-label" for="category">Categorie:</label>
-                            <div class="col-sm-9">
-                                <select id="category" name="category" class="form-control" required>
-                                    <option value="bemiddeling">Bemiddeling</option>
-                                    <option value="donatie_asoka">Donatie Asoka</option>
-                                    <option value="donatie_olescan">Donatie Olescan</option>
-                                    <option value="donatie_overig">Donatie overig</option>
-                                    <option value="verkoop">Verkoop</option>
-                                    <option value="ontvangen_donatie">Ontvangen donatie</option>
-                                    <option value="werkreis">Werkreis</option>
-                                    <option value="inventaris_voer">Inventaris - voer</option>
-                                    <option value="inventaris_training">Inventaris - training</option>
-                                    <option value="inventaris_accessoires">Inventaris - accessoires</option>
-                                    <option value="training">Training</option>
-                                    <option value="dierenarts">Dierenarts</option>
-                                </select>
-                            </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label" for="category">Categorie:</label>
+                        <div class="col-sm-9">
+                            <select id="category" name="category" class="form-control" required>
+                                <option value="bemiddeling">Bemiddeling</option>
+                                <option value="donatie_asoka">Donatie Asoka</option>
+                                <option value="donatie_olescan">Donatie Olescan</option>
+                                <option value="donatie_overig">Donatie overig</option>
+                                <option value="verkoop">Verkoop</option>
+                                <option value="ontvangen_donatie">Ontvangen donatie</option>
+                                <option value="werkreis">Werkreis</option>
+                                <option value="inventaris_voer">Inventaris - voer</option>
+                                <option value="inventaris_training">Inventaris - training</option>
+                                <option value="inventaris_accessoires">Inventaris - accessoires</option>
+                                <option value="training">Training</option>
+                                <option value="dierenarts">Dierenarts</option>
+                            </select>
                         </div>
-                        <div class="form-group">
-                            <label class="col-sm-3 control-label" for="date">Datum:</label>
-                            <div class="col-sm-9">
-                                <input id="date" name="date" class="form-control" type="date" required>
-                            </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label" for="date">Datum:</label>
+                        <div class="col-sm-9">
+                            <input id="date" name="date" class="form-control" type="date" required>
                         </div>
-                        <div class="form-group">
-                            <label class="col-sm-3 control-label" for="kas_in">Kas in</label>
-                            <div class="col-sm-9">
-                                <input id="kas_in" name="kas_in" class="form-control" type="number">
-                            </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label" for="kas_in">Kas in</label>
+                        <div class="col-sm-9">
+                            <input id="kas_in" name="kas_in" class="form-control" type="number">
                         </div>
-                        <div class="form-group">
-                            <label class="col-sm-3 control-label" for="kas_uit">Kas uit</label>
-                            <div class="col-sm-9">
-                                <input id="kas_uit" name="kas_uit" class="form-control" type="number">
-                            </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label" for="kas_uit">Kas uit</label>
+                        <div class="col-sm-9">
+                            <input id="kas_uit" name="kas_uit" class="form-control" type="number">
                         </div>
-                        <div class="form-group">
-                            <label class="col-sm-3 control-label" for="bank_in">Bank in</label>
-                            <div class="col-sm-9">
-                                <input id="bank_in" name="bank_in" class="form-control" type="number">
-                            </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label" for="bank_in">Bank in</label>
+                        <div class="col-sm-9">
+                            <input id="bank_in" name="bank_in" class="form-control" type="number">
                         </div>
-                        <div class="form-group">
-                            <label class="col-sm-3 control-label" for="bank_uit">Bank uit</label>
-                            <div class="col-sm-9">
-                                <input id="bank_uit" name="bank_uit" class="form-control" type="number">
-                            </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label" for="bank_uit">Bank uit</label>
+                        <div class="col-sm-9">
+                            <input id="bank_uit" name="bank_uit" class="form-control" type="number">
                         </div>
-                    </form>
-                    <div class="clearfix"></div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Annuleren</button>
-                    <button id="btn-save" type="button" class="btn btn-primary">Opslaan</button>
-                </div>
+                    </div>
+                </form>
+                <div class="clearfix"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Annuleren</button>
+                <button id="btn-save" type="button" class="btn btn-primary">Opslaan</button>
             </div>
         </div>
     </div>
-    <div id="confirm" class="modal" tabindex="-1" role="dialog">
-        <div class="modal-dialog modal-sm" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                    <h4 class="modal-title"><span class="confirm-text"></span></h4>
-                </div>
-                <div class="modal-body">
-                    <button id="cancel" class="btn btn-default" data-dismiss="modal">Annuleren</button>
-                    <button id="ok" class="btn btn-primary" data-dismiss="modal">OK</button>
-                </div>
+</div>
+<div id="confirm" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title"><span class="confirm-text"></span></h4>
+            </div>
+            <div class="modal-body">
+                <button id="cancel" class="btn btn-default" data-dismiss="modal">Annuleren</button>
+                <button id="ok" class="btn btn-primary" data-dismiss="modal">OK</button>
             </div>
         </div>
     </div>
-    <script src="js/index.js" type="text/javascript"></script>
-    <script src="js/front/regel.js" type="text/javascript"></script>
-    <script src="js/front/focusHandler.js" type="text/javascript"></script>
+</div>
+<script src="js/index.js" type="text/javascript"></script>
+<script src="js/front/regel.js" type="text/javascript"></script>
+<script src="js/front/focusHandler.js" type="text/javascript"></script>
 </body>
 </html>

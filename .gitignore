@@ -1,3 +1,5 @@
 .idea/
 bower_components/
 node_modules/
+Pannestratie-win32-x64/
+pannestratie.asar
