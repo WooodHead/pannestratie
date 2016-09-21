@@ -1,6 +1,7 @@
 (function () {
-    const remote = require('electron').remote;
-    const hotkeys = remote.require("./js/hotkeys");
+    const remote        = require('electron').remote;
+    const hotkeys       = remote.require("./js/hotkeys");
+    const {ipcRenderer} = require('electron');
 
     /**
      * Returns a formatted amount with a euro sign prepended
@@ -52,10 +53,10 @@
             }
         });
         confirmModal.find(".confirm-text").text(text);
-        confirmModal.find("#ok").on("click", () => {
+        confirmModal.find("#confirm-ok").on("click", () => {
             ok();
         });
-        confirmModal.find("#cancel").on("click", () => {
+        confirmModal.find("#confirm-cancel").on("click", () => {
             cancel();
         });
         confirmModal.on("hide.bs.modal", () => {
@@ -82,7 +83,46 @@
         }
     }
 
+    function prompt(text, callback) {
+        const promptModal = $("#prompt");
+        if (promptModal.is(":visible")) {
+            throw new Error("Prompt already visible");
+        }
+        promptModal.modal("show");
+
+        promptModal.on("keypress", (event) => {
+            if (event.which === 13) {
+                ok();
+            }
+        });
+        promptModal.find(".prompt-text").text(text);
+        promptModal.find("#prompt-ok").on("click", () => {
+            ok();
+        });
+
+        const ok = () => {
+            unsetListeners();
+            const valueElement = promptModal.find("#prompt-value");
+            const value        = valueElement.val();
+            valueElement.val("");
+            promptModal.modal("hide");
+            callback(value);
+        };
+
+        const unsetListeners = () => {
+            promptModal.find("#prompt-ok").off("click");
+            promptModal.off("keypress");
+        }
+    }
+
+    ipcRenderer.on("prompt", (event, text, callback) => {
+        prompt(text, (value) => {
+            ipcRenderer.send("prompt", value)
+        });
+    });
+
     window.formatCurrency = formatCurrency;
-    window.alert = alert;
-    window.confirm = confirm;
+    window.alert          = alert;
+    window.confirm        = confirm;
+    window.prompt         = prompt;
 })();

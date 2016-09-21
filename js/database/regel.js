@@ -1,5 +1,8 @@
-const electron            = require('electron');
-const {app}               = electron;
+const electron                     = require('electron');
+const {app, ipcMain}               = electron;
+
+const main  = require('../../main');
+const {win} = main;
 
 const DataStore = require('nedb')
     , db        = new DataStore({
@@ -36,7 +39,10 @@ function getNextId(callback) {
             if (doc && doc._id) {
                 callback(parseInt(doc._id) + 1);
             } else {
-                callback(1);
+                ipcMain.once("prompt", (event, value) => {
+                    callback(parseInt(value));
+                });
+                win().webContents.send("prompt", "Geef het startnummer op");
             }
         }
     );
@@ -54,7 +60,7 @@ function create(data, callback = () => {
         db.insert(data, (error, newDoc) => {
                 if (error) {
                     console.log(error);
-            }
+                }
                 callback(newDoc);
             }
         );
