@@ -5,6 +5,8 @@
     const regel           = remote.require('./js/database/regel');
     const arrayConversion = remote.require('./js/database/arrayConversion');
 
+    const printCaption = $("#print-caption");
+
     const table      = $("#line-table");
     const tableBody  = table.find("tbody");
     const tableFoot  = table.find("tfoot");
@@ -28,6 +30,7 @@
         "inventaris_accessoires": "Inventaris - accessoires",
         "training":               "Training",
         "dierenarts":             "Dierenarts",
+        "overig":                 "Overig",
     };
 
     const getCategory = (categoryKey) => {
@@ -64,6 +67,15 @@
         "date":     formatDate
     };
 
+    const fieldClasses = {
+        "_id":      "text-nowrap",
+        "date":     "text-nowrap",
+        "kas_in":   "text-nowrap",
+        "kas_uit":  "text-nowrap",
+        "bank_in":  "text-nowrap",
+        "bank_uit": "text-nowrap",
+    };
+
     ipcRenderer.on('newLine', () => {
         createNewRegel();
     });
@@ -78,26 +90,32 @@
         for (let filter of formData) {
             data[filter.name] = filter.value;
         }
+        printCaption.text(`
+        Overzicht 
+                    ${data['from_date'] ? "van " + formatDate(data['from_date']) + " " : ""}
+                    ${data['to_date'] ? "tot " + formatDate(data['to_date']) + " " : ""}
+                    ${data['category_filter'] ? "voor " + getCategory(data['category_filter']) + " " : ""}
+                `);
 
-            const filter = {};
+        const filter = {};
         if (data.category_filter) {
             filter.category              = {};
             filter["category"]["$regex"] = data.category_filter;
         }
-            if (data.from_date || data.to_date) filter.date = {};
-            if (data.from_date) filter.date.$gte = data.from_date;
-            if (data.to_date) filter.date.$lte = data.to_date;
-            regel.findAll(filter, (docs) => {
-                setData(docs);
-            });
-        }
-    );
+        if (data.from_date || data.to_date) filter.date = {};
+        if (data.from_date) filter.date.$gte = data.from_date;
+        if (data.to_date) filter.date.$lte = data.to_date;
+        regel.findAll(filter, (docs) => {
+            setData(docs);
+        });
+    });
 
     filterReset.on("click", () => {
         resetTable();
     });
 
     const resetTable = () => {
+        printCaption.text("Totaal overzicht");
         regel.findAll({}, (docs) => {
             setData(docs);
         });
@@ -154,6 +172,7 @@
      */
     regelModal.on("hidden.bs.modal", () => {
         regelModal.find("form")[0].reset();
+        regelModal.find("#_id").val(null);
 
     });
 
@@ -184,9 +203,9 @@
         for (let key of keyOrder) {
             row += ` data-${key}="${doc[key]}"`;
             if (customFields.hasOwnProperty(key)) {
-                data += `<td tabindex="0">${customFields[key](doc[key])}</td>`;
+                data += `<td ${fieldClasses.hasOwnProperty(key) ? 'class="' + fieldClasses[key] + '"' : ""} tabindex="0">${customFields[key](doc[key])}</td>`;
             } else {
-                data += `<td tabindex="0">${doc[key]}</td>`;
+                data += `<td ${fieldClasses.hasOwnProperty(key) ? 'class="' + fieldClasses[key] + '"' : ""} tabindex="0">${doc[key]}</td>`;
             }
         }
         data += `<td class="hidden-print"><a class="delete glyphicon glyphicon-remove"></a></td>`;

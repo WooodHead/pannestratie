@@ -19,7 +19,7 @@ function findAll(conditions = {}, callback) {
     if (conditions.hasOwnProperty("category") && conditions.category.hasOwnProperty("$regex")) {
         conditions.category.$regex = new RegExp(conditions.category.$regex);
     }
-    db.find(conditions, (error, docs) => {
+    db.find(conditions).sort({date: 1}).exec((error, docs) => {
         if (error) {
             console.log(error);
         }
@@ -58,11 +58,11 @@ function create(data, callback = () => {
     getNextId((id) => {
         data._id = id;
         db.insert(data, (error, newDoc) => {
-                if (error) {
-                    console.log(error);
-                }
-                callback(newDoc);
+            if (error) {
+                console.log(error);
             }
+            callback(newDoc);
+                }
         );
         }
     );
