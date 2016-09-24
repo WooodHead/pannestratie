@@ -10,7 +10,8 @@
   },
   "scripts": {
     "start": "electron .",
-    "build": "electron-packager . Pannestratie --platform=win32 --arch=x64 --overwrite"
+    "build": "electron-packager . Pannestratie --platform=win32 --arch=x64 --overwrite",
+    "postinstall": "bower install"
   },
   "dependencies": {
     "bootstrap": "^3.3.7",
